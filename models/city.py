@@ -1,16 +1,21 @@
 #!/usr/bin/python3
 
-
-"""defines a City class, a subclass of BaseModel."""
+"""Defines a City class, a subclass of BaseModel."""
 from models.base_model import BaseModel
+from sqlalchemy import Column, String, ForeignKey
+from models.base import Base
 
 
-class City(BaseModel):
+class City(BaseModel, Base):
     """
     A subclass of BaseModel class
     Public class attributes:
-        state_id: (str) will be State.id
-        name:     (str)
+        __tablename__: (str) represents the table name, cities
+        name:          (str) represents a column containing a string (128 characters), cannot be null
+        state_id:      (str) represents a column containing a string (60 characters), cannot be null
+                       foreign key to states.id
     """
-    state_id = ""
-    name = ""
+    __tablename__ = "cities"
+    name = Column(String(128), nullable=False)
+    state_id = Column(String(60), ForeignKey('states.id'), nullable=False)
+
