@@ -2,7 +2,7 @@
 
 """Defines a Place class, a subclass of BaseModel."""
 from models.base_model import BaseModel
-from sqlalchemy import Column, String, Integer, Float, ForeignKey, Table
+from sqlalchemy import Column, String, Integer, Float, ForeignKey
 from sqlalchemy.orm import relationship
 
 
@@ -22,6 +22,8 @@ class Place(BaseModel):
         latitude:            (float) can be null, default value: 0.0
         longitude:           (float) can be null, default value: 0.0
         amenity_ids:         (list) will be Amenity.id
+        reviews:             (relationship) represents a one-to-many relationship with Review
+        amenities:           (relationship) represents a many-to-many relationship with Amenity
     """
     __tablename__ = "places"
     city_id = Column(String(60), ForeignKey('cities.id'), nullable=False)
@@ -37,6 +39,6 @@ class Place(BaseModel):
     amenity_ids = []
 
     # Establishing relationships
-    reviews = relationship("Review", backref="place")
-    amenities = relationship("Amenity", secondary=place_amenity, viewonly=False) 
+    reviews = relationship("Review", backref="place", cascade="all, delete-orphan")
+    amenities = relationship("Amenity", secondary=place_amenity, viewonly=False)
 
