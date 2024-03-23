@@ -9,7 +9,6 @@ from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
 
-
 class FileStorage:
     """ This is a storage engine for AirBnB clone project
     Class Methods:
@@ -28,6 +27,23 @@ class FileStorage:
     class_dict = {"BaseModel": BaseModel, "User": User, "Place": Place,
                   "Amenity": Amenity, "City": City, "Review": Review,
                   "State": State}
+
+    def all(self, cls=None):
+        """
+        Returns the list of objects of one type of class.
+        """
+        # ... (implementation shown in the previous response)
+
+    def delete(self, obj=None):
+        """
+        Deletes obj from __objects if it's inside.
+        If obj is equal to None, the method should not do anything.
+        """
+        if obj is not None:
+            key = "{}.{}".format(obj.__class__.__name__, obj.id)
+            if key in self.__objects:
+                del self.__objects[key]
+                self.save()  # Persist the changes to the file
 
     def all(self):
         '''Return dictionary of <class>.<id> : object instance.'''
@@ -58,3 +74,4 @@ class FileStorage:
                 self.__objects[key] = obj
         except FileNotFoundError:
             pass
+
