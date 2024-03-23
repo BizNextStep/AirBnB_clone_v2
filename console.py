@@ -83,7 +83,7 @@ class HBNBCommand(cmd.Cmd):
         return True
 
     def do_create(self, arg):
-         """Create a new class instance with given parameters."""
+        """Create a new class instance with given parameters."""
     try:
         if not arg:
             raise SyntaxError("** class name missing **")
