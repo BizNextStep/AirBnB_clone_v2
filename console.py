@@ -82,40 +82,43 @@ class HBNBCommand(cmd.Cmd):
         print("")
         return True
 
-     def do_create(self, line):
-        """Usage: create <class> <key 1>=<value 2> <key 2>=<value 2> ...
-        Create a new class instance with given keys/values and print its id.
+    def do_create(self, arg):
+    """Create a new class instance with given parameters."""
+    try:
+        if not arg:
+            raise SyntaxError("** class name missing **")
 
-        Examples:
-        create User email="john.doe@example.com" password="HBNB_password123"
-        create Place city_id="BJ0001" user_id="A00001" name="My House"
-                 description="This is a great place to stay" number_rooms=4
-                 number_bathrooms=2 price_by_night=100 latitude=38.99 latitude=39.11
-        """
+        args = arg.split()
+        class_name = args[0]
+        if class_name not in HBNBCommand.__classes:
+            raise NameError("** class doesn't exist **")
 
-        try:
-            if not line:
-                raise SyntaxError()
-            my_list = line.split(" ")
+        kwargs = {}
+        for pair in args[1:]:
+            key, value = pair.split('=')
+            key = key.strip()
+            value = value.strip()
+            if value[0] == '"' and value[-1] == '"':
+                value = value[1:-1].replace('_', ' ').replace('\\"', '"')
+            elif '.' in value:
+                value = float(value)
+            else:
+                try:
+                    value = int(value)
+                except ValueError:
+                    continue
+            kwargs[key] = value
 
-            kwargs = {}
-            for pair in my_list[1:]:
-                key, value = pair.split("=")
+        new_instance = eval(class_name)(**kwargs)
+        storage.new(new_instance)
+        storage.save()
+        print(new_instance.id)
 
-                # Handle string values with escaped underscores and double quotes
-                if value.startswith('"') and value.endswith('"'):
-                    value = value.strip('"').replace("\\_", " ")
-                else:
-                    try:
-                        # Attempt float conversion
-                        value = float(value)
-                    except ValueError:
-                        pass  # Keep value as string
+    except SyntaxError as e:
+        print(e)
+    except NameError as e:
+        print(e)
 
-                kwargs[key] = value
-
-            if not kwargs:
-                obj =
 
     def do_show(self, arg):
         """Usage: show <class> <id> or <class>.show(<id>)
