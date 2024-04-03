@@ -1,46 +1,37 @@
 #!/usr/bin/env bash
 
-# Set configurable variables
-nginx_config="/etc/nginx/sites-available/default"
-web_static_dir="/data/web_static"
-html_content="<html>\n  <head>\n  </head>\n  <body>\n    Holberton School\n  </body>\n</html>"
-
-# Function for logging
-log() {
-    echo "$(date) - $1"
-}
-
-# Error handling function
-handle_error() {
-    log "Error: $1"
-    exit 1
-}
-
-# Check if Nginx is installed
+# Install Nginx if not already installed
 if ! command -v nginx &> /dev/null; then
-    log "Nginx not found. Installing Nginx..."
-    sudo apt-get update || handle_error "Failed to update packages"
-    sudo apt-get install -y nginx || handle_error "Failed to install Nginx"
+    sudo apt-get update
+    sudo apt-get install -y nginx
 fi
 
 # Create directory structure if it doesn't exist
-mkdir -p "$web_static_dir/releases/test" "$web_static_dir/shared" || handle_error "Failed to create directories"
+mkdir -p /data/web_static/releases/test /data/web_static/shared
 
 # Create a fake HTML file
-echo -e "$html_content" | sudo tee "$web_static_dir/releases/test/index.html" || handle_error "Failed to create HTML file"
+cat <<EOF > /data/web_static/releases/test/index.html
+<html>
+  <head>
+  </head>
+  <body>
+    Holberton School
+  </body>
+</html>
+EOF
 
 # Create symbolic link
-ln -sf "$web_static_dir/releases/test/" "$web_static_dir/current" || handle_error "Failed to create symbolic link"
+ln -sf /data/web_static/releases/test/ /data/web_static/current
 
 # Set ownership
-sudo chown -R ubuntu:ubuntu "$web_static_dir" || handle_error "Failed to set ownership"
+sudo chown -R ubuntu:ubuntu /data/
 
 # Update Nginx configuration
-sudo sed -i "/^}/i \\\tlocation /hbnb_static/ {\n\t\talias $web_static_dir/current/;\n\t}" "$nginx_config" || handle_error "Failed to update Nginx configuration"
+config_file="/etc/nginx/sites-available/default"
+sudo sed -i "/^}/i \\\tlocation /hbnb_static/ {\n\t\talias /data/web_static/current/;\n\t}" "$config_file"
 
 # Restart Nginx
-sudo service nginx restart || handle_error "Failed to restart Nginx"
+sudo service nginx restart
 
-log "Web server setup completed successfully"
 exit 0
 
