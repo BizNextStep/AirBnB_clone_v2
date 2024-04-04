@@ -4,7 +4,7 @@ if ! command -v nginx &> /dev/null; then
     sudo apt-get install -y nginx
 fi
 
-# Create directory structure if it does not exist
+# Create directory structure if it doesn't exist
 mkdir -p /data/web_static/releases/test /data/web_static/shared
 
 # Create a fake HTML file

@@ -25,7 +25,7 @@ def do_clean(number=0):
     local("ls -1t versions/ | tail -n +{} | xargs -I {{}} rm versions/{{}}"
           .format(number_to_keep))
 
-    # Get a list of all archives in /data/web_static/releases
+    # Get a list of all the archives in /data/web_static/releases
     archive_list = run("ls -1t /data/web_static/releases/").split()
 
     # Keep only the archive names without extensions
