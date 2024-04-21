@@ -21,3 +21,9 @@ class State(BaseModel, Base):
         """
         super().__init__(*args, **kwargs)
 
+    def cities(self):
+        """Returns a list of City objects linked to the current State from storage."""
+        # This method needs to be implemented based on your specific storage engine
+        # if it's not DBStorage. It should retrieve City objects associated with 
+        # the current State instance.
+        raise NotImplementedError 
